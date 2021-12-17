@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "334193965542",
+    "project_id": "mypolyphonyapp",
+    "storage_bucket": "mypolyphonyapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334193965542:android:1d05875ee4055d98677e27",
+        "android_client_info": {
+          "package_name": "com.maphomework.mypolyphonyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334193965542-4jebhq6a26iudlgh4u61bobuquvdat63.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWa6jlo3bRap3-hDLHuW-EMY6PFsPb5ZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334193965542-4jebhq6a26iudlgh4u61bobuquvdat63.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
