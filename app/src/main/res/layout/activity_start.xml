@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Log In"
-        android:id="@+id/login"
+        android:id="@+id/btnLoginStart"
         android:layout_marginTop="15dp"
         android:textColor="@color/colorPrimary"
         android:background="@drawable/button_background"/>
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign Up"
-        android:id="@+id/btnSignupSignup"
+        android:id="@+id/btnSignupStart"
         android:layout_marginTop="15dp"
         android:textColor="@color/colorPrimary"
         android:background="@drawable/button_background"/>

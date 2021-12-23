@@ -1,66 +1,128 @@
 package com.maphomework.mypolyphonyapp.ui.library;
 
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
+import com.maphomework.mypolyphonyapp.Adapter.MusicAdapter;
+import com.maphomework.mypolyphonyapp.Model.Music;
 import com.maphomework.mypolyphonyapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LibraryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class LibraryFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public LibraryFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LibraryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LibraryFragment newInstance(String param1, String param2) {
-        LibraryFragment fragment = new LibraryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private RecyclerView recyclerView;
+    private MusicAdapter musicAdapter;
+    private List<Music> mMusics;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        readMusics();
     }
 
+    public LibraryFragment(){ }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_library, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_library, container, false);
+
+        recyclerView = view.findViewById(R.id.recycler_view_library);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mMusics = new ArrayList<>();
+
+        musicAdapter = new MusicAdapter(getContext(), mMusics);
+
+        recyclerView.setAdapter(musicAdapter);
+
+        return view;
+    }
+
+    public void readMusics(){
+        StorageReference reference = FirebaseStorage.getInstance().getReference();
+
+        reference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(@NonNull ListResult listResult) {
+                ArrayList<StorageReference> items = (ArrayList<StorageReference>) listResult.getPrefixes();
+                for (StorageReference item : items) {
+                    Log.d("Item", item.getPath().toString());
+                    showMusic(item.getPath().toString());
+                }
+            }
+        });
+    }
+
+    public void showMusic(String path){
+        StorageReference reference = FirebaseStorage.getInstance().getReference(path);
+        Task<ListResult> resultTask = reference.listAll();
+        resultTask.addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(@NonNull ListResult listResult) {
+                ArrayList<StorageReference> items = (ArrayList<StorageReference>) listResult.getItems();
+                Music music = new Music();
+                StorageReference musicRef = items.get(1);
+                StorageReference coverRef = items.get(0);
+
+                musicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(@NonNull Uri uri) {
+                        Log.d("Music URL:", uri.toString());
+                        music.setPlayableurl(uri.toString());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Music Linking Error", "Music cannot added", e);
+                    }
+                });
+                coverRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(@NonNull Uri uri) {
+                        Log.d("Cover URL:", uri.toString());
+                        music.setImageurl(uri.toString());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Album Cover Linking Error","Album cover cannot added", e );
+                    }
+                });
+
+                String[] names = musicRef.getName().split("-");
+                music.setMusicName(names[1]);
+                Log.d("Music Name", music.getMusicName());
+                music.setSingerName(names[0]);
+                Log.d("Singer Name", music.getSingerName());
+
+                music.setId(path.substring(6));
+                mMusics.add(music);
+                musicAdapter.notifyDataSetChanged();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Show Music Failed", "onFailure: Show Music Failed", e);
+            }
+        });
     }
 }

@@ -30,8 +30,8 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        login = findViewById(R.id.login);
-        signup = findViewById(R.id.btnSignupSignup);
+        login = findViewById(R.id.btnLoginStart);
+        signup = findViewById(R.id.btnSignupStart);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
