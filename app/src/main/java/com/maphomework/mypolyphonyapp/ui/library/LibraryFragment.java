@@ -1,6 +1,8 @@
 package com.maphomework.mypolyphonyapp.ui.library;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,8 +36,6 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-        readMusics();
     }
 
     public LibraryFragment(){ }
@@ -54,25 +54,27 @@ public class LibraryFragment extends Fragment {
 
         recyclerView.setAdapter(musicAdapter);
 
+        readMusics();
+
         return view;
     }
 
-    public void readMusics(){
+    public synchronized void readMusics(){
         StorageReference reference = FirebaseStorage.getInstance().getReference();
 
         reference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(@NonNull ListResult listResult) {
                 ArrayList<StorageReference> items = (ArrayList<StorageReference>) listResult.getPrefixes();
+                Log.d("Items",items.toString());
                 for (StorageReference item : items) {
-                    Log.d("Item", item.getPath().toString());
                     showMusic(item.getPath().toString());
                 }
             }
         });
     }
 
-    public void showMusic(String path){
+    public synchronized void showMusic(String path){
         StorageReference reference = FirebaseStorage.getInstance().getReference(path);
         Task<ListResult> resultTask = reference.listAll();
         resultTask.addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -86,7 +88,6 @@ public class LibraryFragment extends Fragment {
                 musicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(@NonNull Uri uri) {
-                        Log.d("Music URL:", uri.toString());
                         music.setPlayableurl(uri.toString());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -98,7 +99,6 @@ public class LibraryFragment extends Fragment {
                 coverRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(@NonNull Uri uri) {
-                        Log.d("Cover URL:", uri.toString());
                         music.setImageurl(uri.toString());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -110,9 +110,7 @@ public class LibraryFragment extends Fragment {
 
                 String[] names = musicRef.getName().split("-");
                 music.setMusicName(names[1]);
-                Log.d("Music Name", music.getMusicName());
                 music.setSingerName(names[0]);
-                Log.d("Singer Name", music.getSingerName());
 
                 music.setId(path.substring(6));
                 mMusics.add(music);

@@ -8,6 +8,7 @@ public class Music {
     private String imageurl;
     private String playableurl;
     private String length;
+    private boolean isLiked;
 
     public Music(){
     }
@@ -58,5 +59,13 @@ public class Music {
 
     public void setLength(String length) {
         this.length = length;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

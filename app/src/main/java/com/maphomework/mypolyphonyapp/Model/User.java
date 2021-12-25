@@ -10,6 +10,14 @@ public class User {
     public User(){
     }
 
+    public User(String id, String username, String fullname, String imageurl, String bio) {
+        this.id = id;
+        this.username = username;
+        this.fullname = fullname;
+        this.imageurl = imageurl;
+        this.bio = bio;
+    }
+
     public String getId() {
         return id;
     }

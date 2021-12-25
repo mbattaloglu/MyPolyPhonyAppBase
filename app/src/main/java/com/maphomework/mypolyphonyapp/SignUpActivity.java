@@ -95,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
                     hashMap.put("username", username);
                     hashMap.put("fullname", fullName);
                     hashMap.put("bio", "");
-                    hashMap.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/polyphonyproject-1d40f.appspot.com/o/placeholder.jpg?alt=media&token=eed61d5c-07cd-43f8-b1f3-94ce8afc780f");
+                    hashMap.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/mypolyphonyapp.appspot.com/o/placeholder.jpg?alt=media&token=f14cdfbc-9413-495b-87f4-791dee382e0c");
 
                     reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
