@@ -11,4 +11,6 @@
     <color name="colorPrimaryDark">#403d3d</color>
     <color name="colorAccent">#c2bdbf</color>
     <color name="colorBlack">#000000</color>
+    <color name="senderBox">#7BCCB5</color>
+    <color name="receiverBox">#307D7E</color>
 </resources>

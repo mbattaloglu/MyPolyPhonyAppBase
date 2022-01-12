@@ -1,6 +1,8 @@
 package com.maphomework.mypolyphonyapp.Model;
 
-public class Music {
+import java.io.Serializable;
+
+public class Music implements Serializable{
 
     private String id;
     private String musicName;
@@ -65,7 +67,20 @@ public class Music {
         return isLiked;
     }
 
-    public void setLiked(boolean liked) {
+    public void setIsLiked(boolean liked) {
         isLiked = liked;
+    }
+
+    @Override
+    public String toString() {
+        return "Music{" +
+                "id='" + id + '\'' +
+                ", musicName='" + musicName + '\'' +
+                ", singerName='" + singerName + '\'' +
+                ", imageurl='" + imageurl + '\'' +
+                ", playableurl='" + playableurl + '\'' +
+                ", length='" + length + '\'' +
+                ", isLiked=" + isLiked +
+                '}';
     }
 }

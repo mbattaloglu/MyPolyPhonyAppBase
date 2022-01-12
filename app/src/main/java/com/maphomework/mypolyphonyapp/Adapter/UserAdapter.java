@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,9 +23,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.maphomework.mypolyphonyapp.Model.User;
+import com.maphomework.mypolyphonyapp.PreviousChatsFragment;
 import com.maphomework.mypolyphonyapp.R;
 import com.maphomework.mypolyphonyapp.ui.profile.ProfileFragment;
 
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -68,19 +72,26 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                editor.putString("profileid", user.getId());
+                editor.putString("currentUser", user.getId());
                 editor.apply();
+                FragmentManager fm = ((FragmentActivity)mContext).getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ProfileFragment pf = new ProfileFragment();
+                ft.replace(R.id.nav_host_fragment_activity_main, pf);
+                ft.commit();
 
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, new ProfileFragment()).commit();
+
+                //((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, new ProfileFragment()).commit();
             }
         });
 
         holder.btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.btnFollow.getText().toString().equals("Follow")){
+                if (holder.btnFollow.getText().toString().equals("follow")){
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid()).child("following").child(user.getId()).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getId()).child("followers").child(firebaseUser.getUid()).setValue(true);
+                    addNotification(user.getId());
                 }
                 else{
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid()).child("following").child(user.getId()).removeValue();
@@ -92,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mUsers.size();
     }
 
     public class UserViewHolder extends RecyclerView.ViewHolder{
@@ -114,16 +125,26 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
     }
 
+    private void addNotification(String userId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(userId);
+        HashMap<String, Object> hashMap= new HashMap<>();
+
+        hashMap.put("userid", firebaseUser.getUid());
+        hashMap.put("text", "started following you!");
+
+        reference.push().setValue(hashMap);
+    }
+
     private void isFollowing(final String userid, Button button){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid()).child("following");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.child(userid).exists()){
-                    button.setText("Following");
+                    button.setText("following");
                 }
                 else {
-                    button.setText("Follow");
+                    button.setText("follow");
                 }
             }
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.search.SearchFragment">
+    tools:context=".ui.searchuser.SearchUserFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/barSearch"
@@ -23,13 +23,14 @@
                 android:src="@drawable/ic_search" />
 
             <EditText
-                android:id="@+id/edtTextSearchSearch"
+                android:id="@+id/edtTextSearchSearchUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
-                android:hint="Search..." />
+                android:hint="Search..."
+                android:maxLines="1" />
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

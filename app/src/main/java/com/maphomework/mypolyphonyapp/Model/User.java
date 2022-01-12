@@ -1,11 +1,16 @@
 package com.maphomework.mypolyphonyapp.Model;
 
+import android.hardware.lights.LightsManager;
+
+import java.util.List;
+
 public class User {
     private String id;
     private String username;
     private String fullname;
     private String imageurl;
     private String bio;
+    private List<Music> favouriteMusics;
 
     public User(){
     }
@@ -56,5 +61,13 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<Music> getFavouriteMusics() {
+        return favouriteMusics;
+    }
+
+    public void setFavouriteMusics(List<Music> favouriteMusics) {
+        this.favouriteMusics = favouriteMusics;
     }
 }

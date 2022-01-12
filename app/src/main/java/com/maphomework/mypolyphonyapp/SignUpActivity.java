@@ -70,6 +70,9 @@ public class SignUpActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(strUsername) || TextUtils.isEmpty(strFullName) || TextUtils.isEmpty(strEmail) || TextUtils.isEmpty(strPassword)){
                     Toast.makeText(SignUpActivity.this, "All Fields Are Required", Toast.LENGTH_SHORT).show();
                 }
+                else if (!EmailChecker.isValidEmail(strEmail)){
+                    Toast.makeText(SignUpActivity.this, "Please type a valid e-mail", Toast.LENGTH_SHORT).show();
+                }
                 else if (strPassword.length() < 6){
                     Toast.makeText(SignUpActivity.this, "Password must have at least 6 characters.", Toast.LENGTH_SHORT).show();
                 }
